@@ -70,22 +70,18 @@ export async function POST(req: NextRequest) {
         await transporter.sendMail({
           from: `"Ashutosh Shekhar" <${process.env.SMTP_USER}>`,
           to: data.email,
-          subject: "Got your message! I'll be in touch soon.",
+          subject: "Thank you for reaching out - Ashutosh Shekhar",
           html: `
-            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #0d0d1a; color: #f5f5fa; padding: 32px; border-radius: 12px;">
-              <h2 style="color: #f0c040;">Hey ${data.name}! 👋</h2>
-              <p style="color: #9090b0; line-height: 1.7; margin: 16px 0;">
-                Thanks for reaching out! I received your message about <strong style="color: #00fff0;">"${data.subject}"</strong> 
-                and I'll get back to you within <strong style="color: #f0c040;">24 hours</strong>.
+            <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #0d0d1a; color: #f5f5fa; padding: 32px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+              <p style="color: #f5f5fa; font-size: 16px;">Dear <strong>${data.name}</strong>,</p>
+              
+              <p style="color: #9090b0; line-height: 1.7; margin: 16px 0; font-size: 15px;">
+                Thank you for reaching out to us. We have received your query successfully and appreciate your interest. I am currently reviewing your request and will get back to you as soon as possible with the required information.
               </p>
-              <p style="color: #9090b0; line-height: 1.7;">
-                While you wait, check out my latest projects on 
-                <a href="https://github.com/ashutosh123se" style="color: #f0c040;">GitHub</a>.
-              </p>
-              <div style="margin-top: 24px; padding: 16px; background: #08080f; border-radius: 8px;">
-                <p style="color: #505070; font-size: 13px; margin: 0;">Best regards,</p>
-                <p style="color: #f5f5fa; font-weight: bold; margin: 4px 0;">Ashutosh Shekhar</p>
-                <p style="color: #9090b0; font-size: 12px;">Full-Stack Developer · Data Scientist · AI Engineer</p>
+
+              <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05);">
+                <p style="color: #9090b0; font-size: 15px; margin: 0 0 8px 0;">Best regards,</p>
+                <p style="color: #f0c040; font-weight: bold; font-size: 16px; margin: 0;">Ashutosh Shekhar</p>
               </div>
             </div>
           `,
