@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import { Terminal, Code2, Database, BrainCircuit, Server, GitBranch, BarChart3 } from "lucide-react";
+import { Terminal, Code2, Database, BrainCircuit, Server, BarChart3 } from "lucide-react";
 
 const whatIDo = [
   { icon: Code2, label: "Full-Stack Web Apps" },

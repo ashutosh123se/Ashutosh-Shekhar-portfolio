@@ -65,7 +65,7 @@ export function ContactSection() {
         origin: { y: 0.6 },
         colors: ["#f0c040", "#00fff0", "#7928ca", "#ffffff"],
       });
-    } catch (e) {
+    } catch {
       setError("Failed to send message. Please try again or email directly.");
     } finally {
       setLoading(false);

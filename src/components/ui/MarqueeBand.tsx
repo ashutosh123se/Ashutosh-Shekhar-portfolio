@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+
 
 const marqueeItems = [
   "REACT.JS", "NODE.JS", "PYTHON", "POSTGRESQL", "NEXT.JS", "AWS", "DOCKER",
