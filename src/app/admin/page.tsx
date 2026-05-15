@@ -1,20 +1,16 @@
 import { prisma } from "@/lib/prisma";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import LogoutButton from "./LogoutButton";
 
 // Revalidate the page every 60 seconds (or 0 to be completely dynamic)
 export const revalidate = 0;
 
-export default async function AdminMessagesPage({ searchParams }: { searchParams: { key?: string } }) {
-  // Very basic security: check a URL parameter (e.g., /admin?key=your_secret_key)
-  // You should configure a proper NEXT_PUBLIC_ADMIN_KEY or use next-auth for real security
-  const adminKey = process.env.ADMIN_KEY || "ashutosh_admin";
+export default async function AdminMessagesPage() {
+  const session = cookies().get("admin_session");
   
-  if (searchParams.key !== adminKey) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-bg-void">
-        <h1 className="text-3xl font-grotesk font-bold text-red-400 mb-4">Unauthorized Access</h1>
-        <p className="text-text-secondary font-inter">Please provide the correct admin key in the URL. Example: ?key=ashutosh_admin</p>
-      </div>
-    );
+  if (!session || session.value !== "authenticated") {
+    redirect("/admin/login");
   }
 
   const messages = await prisma.contactMessage.findMany({
@@ -29,9 +25,12 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
             <h1 className="font-grotesk font-bold text-4xl gradient-text mb-2">Admin Dashboard</h1>
             <p className="text-text-secondary">View and manage incoming contact form messages.</p>
           </div>
-          <div className="bg-bg-elevated border border-border-subtle rounded-xl px-4 py-2">
-            <span className="text-cyan-bright font-mono font-bold text-xl">{messages.length}</span>
-            <span className="text-text-muted text-sm ml-2">Total Messages</span>
+          <div className="flex items-center">
+            <div className="bg-bg-elevated border border-border-subtle rounded-xl px-4 py-2">
+              <span className="text-cyan-bright font-mono font-bold text-xl">{messages.length}</span>
+              <span className="text-text-muted text-sm ml-2">Total Messages</span>
+            </div>
+            <LogoutButton />
           </div>
         </div>
 
