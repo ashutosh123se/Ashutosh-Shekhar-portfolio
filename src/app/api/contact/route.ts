@@ -1,0 +1,85 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import nodemailer from "nodemailer";
+
+const contactSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  subject: z.string().min(1),
+  budget: z.string().optional(),
+  message: z.string().min(20),
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const data = contactSchema.parse(body);
+
+    // Configure transporter (update with real SMTP credentials in .env)
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: false,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    // Send email to admin
+    await transporter.sendMail({
+      from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
+      to: "ashutoshshekhar37@gmail.com",
+      subject: `[Portfolio] ${data.subject} — from ${data.name}`,
+      html: `
+        <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #0d0d1a; color: #f5f5fa; padding: 32px; border-radius: 12px;">
+          <h2 style="color: #f0c040; margin-bottom: 24px;">New Portfolio Message</h2>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr><td style="padding: 8px 0; color: #9090b0; font-size: 13px;">Name</td><td style="color: #f5f5fa;">${data.name}</td></tr>
+            <tr><td style="padding: 8px 0; color: #9090b0; font-size: 13px;">Email</td><td style="color: #f5f5fa;">${data.email}</td></tr>
+            <tr><td style="padding: 8px 0; color: #9090b0; font-size: 13px;">Subject</td><td style="color: #f5f5fa;">${data.subject}</td></tr>
+            ${data.budget ? `<tr><td style="padding: 8px 0; color: #9090b0; font-size: 13px;">Budget</td><td style="color: #f5f5fa;">${data.budget}</td></tr>` : ""}
+          </table>
+          <div style="margin-top: 20px; padding: 16px; background: #08080f; border-radius: 8px; border-left: 3px solid #f0c040;">
+            <p style="color: #9090b0; font-size: 13px; margin-bottom: 8px;">Message:</p>
+            <p style="color: #f5f5fa; line-height: 1.6;">${data.message.replace(/\n/g, "<br>")}</p>
+          </div>
+          <p style="color: #505070; font-size: 12px; margin-top: 24px;">Sent from ashutoshshekhar.dev portfolio</p>
+        </div>
+      `,
+    });
+
+    // Auto-reply to sender
+    await transporter.sendMail({
+      from: `"Ashutosh Shekhar" <${process.env.SMTP_USER}>`,
+      to: data.email,
+      subject: "Got your message! I'll be in touch soon.",
+      html: `
+        <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: #0d0d1a; color: #f5f5fa; padding: 32px; border-radius: 12px;">
+          <h2 style="color: #f0c040;">Hey ${data.name}! 👋</h2>
+          <p style="color: #9090b0; line-height: 1.7; margin: 16px 0;">
+            Thanks for reaching out! I received your message about <strong style="color: #00fff0;">"${data.subject}"</strong> 
+            and I'll get back to you within <strong style="color: #f0c040;">24 hours</strong>.
+          </p>
+          <p style="color: #9090b0; line-height: 1.7;">
+            While you wait, check out my latest projects on 
+            <a href="https://github.com" style="color: #f0c040;">GitHub</a>.
+          </p>
+          <div style="margin-top: 24px; padding: 16px; background: #08080f; border-radius: 8px;">
+            <p style="color: #505070; font-size: 13px; margin: 0;">Best regards,</p>
+            <p style="color: #f5f5fa; font-weight: bold; margin: 4px 0;">Ashutosh Shekhar</p>
+            <p style="color: #9090b0; font-size: 12px;">Full-Stack Developer · Data Scientist · AI Engineer</p>
+          </div>
+        </div>
+      `,
+    });
+
+    return NextResponse.json({ success: true, message: "Message sent successfully" });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: "Validation failed", details: error.errors }, { status: 400 });
+    }
+    console.error("Contact API error:", error);
+    return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
+  }
+}
