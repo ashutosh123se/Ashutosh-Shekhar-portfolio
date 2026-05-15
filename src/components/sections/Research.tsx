@@ -66,7 +66,9 @@ export function ResearchSection() {
 
             <div className="flex gap-4">
               <a
-                href="#"
+                href="/research-paper.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-gold flex items-center gap-2 px-5 py-2 text-sm"
               >
                 <ExternalLink size={14} /> Read Paper
