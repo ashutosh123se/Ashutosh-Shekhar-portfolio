@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import nodemailer from "nodemailer";
+import { prisma } from "@/lib/prisma";
 
 const contactSchema = z.object({
   name: z.string().min(2),
@@ -14,6 +15,17 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = contactSchema.parse(body);
+
+    // Save to Neon Database via Prisma
+    await prisma.contactMessage.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        subject: data.subject,
+        budget: data.budget,
+        message: data.message,
+      },
+    });
 
     // Configure transporter (update with real SMTP credentials in .env)
     const transporter = nodemailer.createTransport({
