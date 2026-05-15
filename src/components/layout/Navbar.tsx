@@ -114,11 +114,11 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden text-text-primary p-2 rounded-lg border border-border-subtle"
+            className="lg:hidden text-text-primary p-2.5 rounded-xl border border-border-subtle bg-bg-elevated/50 backdrop-blur-md flex shrink-0 items-center justify-center relative z-[60] hover:bg-bg-elevated transition-colors"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </motion.nav>
