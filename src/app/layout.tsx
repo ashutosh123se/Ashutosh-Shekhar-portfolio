@@ -107,7 +107,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth overflow-x-hidden max-w-[100vw]">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -121,7 +121,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-bg-void text-text-primary font-inter antialiased">
+      <body className="bg-bg-void text-text-primary font-inter antialiased overflow-x-hidden max-w-[100vw]">
         <div className="mesh-gradient" />
         <ParticleBackground />
         <CustomCursor />
